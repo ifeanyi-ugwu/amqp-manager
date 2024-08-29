@@ -1,0 +1,7 @@
+# source
+/src
+
+# misc
+.gitignore
+tsconfig.json
+*.tgz
