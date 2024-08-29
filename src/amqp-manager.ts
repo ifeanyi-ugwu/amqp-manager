@@ -1,4 +1,4 @@
-import { Options } from "amqplib";
+import { Connection, Options } from "amqplib";
 import { AMQPConnection, AMQPConnectionConfig } from "./connection";
 import { Publisher, PublisherConfig } from "./publisher";
 import { Worker, WorkerConfig } from "./worker";
@@ -96,5 +96,13 @@ export class AMQPManager {
   public static connection() {
     const instance = AMQPManager.getInstance();
     return instance.connection.getConnection();
+  }
+
+  public static async createConnection(
+    config: AMQPConnectionConfig
+  ): Promise<Connection | null> {
+    const newConnection = new AMQPConnection(config);
+    await newConnection.connect();
+    return newConnection.getConnection();
   }
 }
