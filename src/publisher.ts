@@ -1,6 +1,6 @@
 import { Channel, Connection, Options } from "amqplib";
-import { AMQPConnection } from "./connection";
-import { logger } from "./logger";
+import { AMQPConnection } from "./connection.js";
+import { logger } from "./logger.js";
 
 export interface PublisherConfig {
   exchange: {

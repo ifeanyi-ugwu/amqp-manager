@@ -1,7 +1,7 @@
 import { Connection, Options } from "amqplib";
-import { AMQPConnection, AMQPConnectionConfig } from "./connection";
-import { Publisher, PublisherConfig } from "./publisher";
-import { Worker, WorkerConfig } from "./worker";
+import { AMQPConnection, AMQPConnectionConfig } from "./connection.js";
+import { Publisher, PublisherConfig } from "./publisher.js";
+import { Worker, WorkerConfig } from "./worker.js";
 
 export class AMQPManager {
   private connection: AMQPConnection;

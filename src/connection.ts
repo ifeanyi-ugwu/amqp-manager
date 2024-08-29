@@ -1,7 +1,7 @@
 import amqp, { Connection } from "amqplib";
 import EventEmitter from "events";
-import { logger } from "./logger";
-import { retry, RetryConfig } from "./retry";
+import { logger } from "./logger.js";
+import { retry, RetryConfig } from "./retry.js";
 
 const defaultRetryConfig: RetryConfig = {
   onError: (error, attempt, nextRetryTime) => {
