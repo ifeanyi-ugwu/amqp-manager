@@ -22,7 +22,7 @@ class Logger {
   }
 
   private getLogLevelFromEnv(): LogLevel {
-    const envLevel = process.env.AMQP_LOG_LEVEL;
+    const envLevel = process.env.AMQP_LOG_LEVEL?.toUpperCase();
     switch (envLevel) {
       case "DEBUG":
         return LogLevel.DEBUG;
