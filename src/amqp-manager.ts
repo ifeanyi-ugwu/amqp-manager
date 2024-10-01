@@ -98,6 +98,7 @@ export class AMQPManager {
     return instance.connection.getConnection();
   }
 
+  //TODO: store the created connection in this instance and find a way to access those underlying connections
   public static async createConnection(
     config: AMQPConnectionConfig
   ): Promise<Connection | null> {

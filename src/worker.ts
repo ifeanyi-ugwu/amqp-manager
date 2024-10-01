@@ -24,8 +24,13 @@ export interface WorkerConfig {
   };
 }
 
-export class Worker {
+export class Worker implements AsyncIterable<ConsumeMessage> {
   private channel: Channel | null = null;
+  private messageQueue: ConsumeMessage[] = [];
+  private resolveQueue: ((
+    value: IteratorResult<ConsumeMessage, any>
+  ) => void)[] = [];
+  private useAsyncIterator: boolean = false; // Flag to track async iterator usage
 
   constructor(
     private connection: AMQPConnection,
@@ -191,11 +196,40 @@ export class Worker {
         this.channel.nack.bind(this.channel)
       );
 
+      // Add message to queue for async iterator
+      // Only add message to queue if async iterator is used
+      if (this.useAsyncIterator) {
+        this.messageQueue.push(msg);
+        this.processQueue();
+      }
+
       //this.channel.ack(msg);
     } catch (error) {
       console.error("Error handling message:", error);
       // Optionally nack the message if an error occurs
       //this.channel.nack(msg);
     }
+  }
+
+  private processQueue() {
+    while (this.messageQueue.length > 0 && this.resolveQueue.length > 0) {
+      const message = this.messageQueue.shift()!;
+      const resolve = this.resolveQueue.shift()!;
+      resolve({ value: message, done: false });
+    }
+  }
+
+  [Symbol.asyncIterator](): AsyncIterator<ConsumeMessage> {
+    this.useAsyncIterator = true; // Mark the flag as true when async iterator is used
+    return {
+      next: async (): Promise<IteratorResult<ConsumeMessage>> => {
+        if (this.messageQueue.length > 0) {
+          return { value: this.messageQueue.shift()!, done: false };
+        }
+        return new Promise<IteratorResult<ConsumeMessage>>((resolve) => {
+          this.resolveQueue.push(resolve);
+        });
+      },
+    };
   }
 }
